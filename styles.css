@@ -50,3 +50,10 @@ circle.antiquewhite {
     fill: antiquewhite;
 }
 
+.rahmen {
+    border: 4px outset yellowgreen;
+}
+
+.borderUebersicht {
+    border: 6px solid black
+}
