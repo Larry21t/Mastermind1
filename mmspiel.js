@@ -1,5 +1,6 @@
 const anzahlReihen = 8
 const anzahlLoecherProReihe = 4
+const anzahlFarben = 6
 
 var svgAnzahl = 0
 function loecherErstellen(){
@@ -39,6 +40,7 @@ function loecherErstellen(){
 function bewertungsLoecher(){
     var svg1 = document.getElementById(`svg${svgAnzahl}`)
     var abstand = 0
+    var bewertID = 1
     for(var bewertloch = 0; bewertloch < (anzahlLoecherProReihe/2); bewertloch++){
         var grosserBewertKreisOben = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
         grosserBewertKreisOben.classList.add("nail")
@@ -46,13 +48,16 @@ function bewertungsLoecher(){
         grosserBewertKreisOben.setAttribute("cx", ((255 + 115*anzahlLoecherProReihe) + 55*abstand))
         grosserBewertKreisOben.setAttribute("cy", 30)
         grosserBewertKreisOben.setAttribute("r", 15)
+        grosserBewertKreisOben.id = `grosserBewertKreis${bewertID}`
         var kleinerBewertKreisOben =  document.createElementNS('http://www.w3.org/2000/svg', 'circle')
         kleinerBewertKreisOben.classList.add("nail")
         kleinerBewertKreisOben.classList.add("antiquewhite")
         kleinerBewertKreisOben.setAttribute("cx", ((255 + 115*anzahlLoecherProReihe) + 55*abstand))
         kleinerBewertKreisOben.setAttribute("cy", 30)
         kleinerBewertKreisOben.setAttribute("r", 8)
+        kleinerBewertKreisOben.id = `kleinerBewertKreis${bewertID}`
         abstand++
+        bewertID++
         svg1.appendChild(grosserBewertKreisOben)
         svg1.appendChild(kleinerBewertKreisOben)
     }
@@ -70,11 +75,14 @@ function bewertungsLoecher(){
         kleinerBewertKreisUnten.setAttribute("cx", ((255 + 115*anzahlLoecherProReihe) + 55*abstand))
         kleinerBewertKreisUnten.setAttribute("cy", 85)
         kleinerBewertKreisUnten.setAttribute("r", 8)
+        kleinerBewertKreisUnten.id = `kleinerBewertKreis${bewertID}`
         abstand++
+        bewertID++
         svg1.appendChild(grosserBewertKreisUnten)
         svg1.appendChild(kleinerBewertKreisUnten)
     }
 }
+
 
 
 
@@ -168,11 +176,10 @@ function ReihenAnklickbarMachen(){
         var svg1 = document.getElementById(`svg${svgNummer}`)
         kleinerKreisNummer = 1
         for(var i=0; i < anzahlLoecherProReihe; i++){
-            var circles = svg1.getElementById(`kleinerKreis${kleinerKreisNummer}`)
-            
-            circles.addEventListener("click" , function(){
-            klasseAendernWennMausklick(this)
-            }) 
+            var circles = svg1.getElementById(`kleinerKreis${kleinerKreisNummer}`) 
+            circles.addEventListener('click', function(){
+                klasseAendernWennMausklick(this)
+            })
             kleinerKreisNummer++
         }
         svgNummer++
@@ -225,6 +232,147 @@ function klasseAendernWennMausklick(loch){
     } 
 }
 
+
+var farben = ["green", "yellow", "orange", "red", "purple", "blue"]
+var zufallsFarbe = farben[Math.floor(Math.random()*farben.length)]
+var uebersichtComputerPilze = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+
+function loecherFuerFarbcodeDesComputers(){
+    var body = document.getElementsByTagName("body")[0]
+    uebersichtComputerPilze.setAttribute("viewBox", "0 0 1000 120")
+    uebersichtComputerPilze.id = "uebersichtComputerPilze"
+    body.appendChild(uebersichtComputerPilze) 
+    var farben = ["green", "yellow", "orange", "red", "purple", "blue"]
+    var abstand = 0
+    var pilzID = 1
+    uebersichtComputerPilze.style.visibility = "hidden"
+    for(var loch = 0; loch < anzahlLoecherProReihe; loch++){
+        var computerPilze= document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+        computerPilze.id = `computerPilz${pilzID}`
+        var zufallsFarbe = farben[Math.floor(Math.random()*farben.length)]
+        computerPilze.classList.add("mushroom")
+        computerPilze.classList.add(zufallsFarbe)
+        farben.splice(farben.indexOf(zufallsFarbe), 1)
+        computerPilze.setAttribute("cx", (255 + 115*abstand))
+        computerPilze.setAttribute("cy", 55)
+        computerPilze.setAttribute("r", 50)
+        abstand++ 
+        pilzID++
+        uebersichtComputerPilze.appendChild(computerPilze)
+    }
+    
+}
+
+
+
+
+function buttonUmCodeZuRaten(){
+    var body = document.getElementsByTagName("body")[0]
+    var button = document.createElement("div")
+    button.innerHTML = "<button> Raten </button>"
+    button.onclick = function(){
+        farbcodeMitComputerFarbcodeVergleichen()
+        // kreiseInSVGBoxNichtAnklickbarMachen()
+        
+    }
+    body.appendChild(button)
+}
+
+
+
+var svgNummer = 1
+function farbcodeMitComputerFarbcodeVergleichen(){
+    var svg1 = document.getElementById(`svg${svgNummer}`)
+    var ersterPilz = svg1.getElementById("kleinerKreis1")
+    var zweiterPilz = svg1.getElementById("kleinerKreis2")
+    var dritterPilz  = svg1.getElementById("kleinerKreis3")
+    var vierterPilz = svg1.getElementById("kleinerKreis4")
+    var bewertKreis1 = svg1.getElementById("kleinerBewertKreis1")
+    var bewertKreis2 = svg1.getElementById("kleinerBewertKreis2")
+    var bewertKreis3 = svg1.getElementById("kleinerBewertKreis3")
+    var bewertKreis4 = svg1.getElementById("kleinerBewertKreis4")
+    if(computerPilz1.classList[1] == ersterPilz.classList[1]){  
+        bewertKreis1.setAttribute("r", 15)
+        bewertKreis1.classList.remove("antiquewhite")
+        bewertKreis1.classList.add("black")
+    }
+    else{
+        if(computerPilz1.classList[1] == zweiterPilz.classList[1] || computerPilz1.classList[1]== dritterPilz.classList[1] || computerPilz1.classList[1]==vierterPilz.classList[1]){
+            bewertKreis1.setAttribute("r", 15)
+            bewertKreis1.classList.remove("antiquewhite")
+            bewertKreis1.classList.add("white")
+        }
+    }
+    if(computerPilz2.classList[1] == zweiterPilz.classList[1]){
+        bewertKreis2.setAttribute("r", 15)
+        bewertKreis2.classList.remove("antiquewhite")
+        bewertKreis2.classList.add("black")
+    }
+    else{
+        if(computerPilz2.classList[1] == ersterPilz.classList[1] || computerPilz2.classList[1]== dritterPilz.classList[1] || computerPilz2.classList[1]==vierterPilz.classList[1]){
+            bewertKreis2.setAttribute("r", 15)
+            bewertKreis2.classList.remove("antiquewhite")
+            bewertKreis2.classList.add("white")
+        
+        }
+
+    }
+    if(computerPilz3.classList[1] == dritterPilz.classList[1]){
+        bewertKreis3.setAttribute("r", 15)
+        bewertKreis3.classList.remove("antiquewhite")
+        bewertKreis3.classList.add("black")
+    }
+    else{
+        if(computerPilz3.classList[1] == ersterPilz.classList[1] || computerPilz3.classList[1]== zweiterPilz.classList[1] || computerPilz3.classList[1]==vierterPilz.classList[1]){
+            bewertKreis3.setAttribute("r", 15)
+            bewertKreis3.classList.remove("antiquewhite")
+            bewertKreis3.classList.add("white")
+        
+        }
+
+    } 
+    if(computerPilz4.classList[1] == vierterPilz.classList[1]){
+        bewertKreis4.setAttribute("r", 15)
+        bewertKreis4.classList.remove("antiquewhite")
+        bewertKreis4.classList.add("black")
+    }
+    else{
+        if(computerPilz4.classList[1] == ersterPilz.classList[1] || computerPilz4.classList[1]== zweiterPilz.classList[1] || computerPilz4.classList[1]==dritterPilz.classList[1]){
+            bewertKreis4.setAttribute("r", 15)
+            bewertKreis4.classList.remove("antiquewhite")
+            bewertKreis4.classList.add("white")
+        
+        }
+
+    }
+    if(bewertKreis1.classList.contains("black") && bewertKreis2.classList.contains("black") && bewertKreis3.classList.contains("black") && bewertKreis4.classList.contains("black")){
+        alert("Du hast den Farbcode herausgefunden!")
+        uebersichtComputerPilze.style.visibility = "visible"
+    }
+    svgNummer++
+
+    
+}
+
+// function kreiseInSVGBoxNichtAnklickbarMachen(){
+//     var svg1 = document.getElementById(`svg${svgNummer}`)
+//     var pilz1 = svg1.getElementById("kleinerKreis1")
+//     var pilz2 = svg1.getElementById("kleinerKreis2")
+//     var pilz3 = svg1.getElementById("kleinerKreis3")
+//     var pilz4 = svg1.getElementById("kleinerKreis4")
+//     pilz1.removeEventListener("click", klasseAendernWennMausklick)
+//     svgNummer++
+
+// }
+
 farbigePilze()
 reihenErstellen()
 ReihenAnklickbarMachen()
+loecherFuerFarbcodeDesComputers()
+var computerPilz1 = document.getElementById("computerPilz1")
+var computerPilz2 = document.getElementById("computerPilz2")
+var computerPilz3 = document.getElementById("computerPilz3")
+var computerPilz4 = document.getElementById("computerPilz4")
+
+buttonUmCodeZuRaten()
+
